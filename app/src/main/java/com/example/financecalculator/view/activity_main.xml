@@ -1,0 +1,43 @@
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+    <data>
+        <variable
+            name="viewModel"
+            type="com.example.loanapp.viewmodel.LoanViewModel" />
+    </data>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <EditText
+            android:id="@+id/et_principal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Principal Amount" />
+
+        <EditText
+            android:id="@+id/et_interest_rate"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Interest Rate (%)" />
+
+        <EditText
+            android:id="@+id/et_tenure"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Tenure (months)" />
+
+        <Button
+            android:id="@+id/btn_calculate"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Calculate" />
+
+        <TextView
+            android:id="@+id/tv_monthly_installment"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Monthly Installment: " />
+    </LinearLayout>
+</layout>
