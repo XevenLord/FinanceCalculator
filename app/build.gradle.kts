@@ -31,16 +31,20 @@ android {
     }
     buildFeatures {
         viewBinding = true
+        dataBinding = true
     }
 }
 
 dependencies {
-
     implementation(libs.appcompat)
     implementation(libs.material)
     implementation(libs.constraintlayout)
     implementation(libs.navigation.fragment)
     implementation(libs.navigation.ui)
+    implementation("androidx.databinding:databinding-runtime:8.5.0") {
+        exclude(group = "androidx.databinding", module = "library")
+    }
+    implementation("com.jakewharton.threetenabp:threetenabp:1.3.1")
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
