@@ -45,8 +45,7 @@ public class MainActivity extends AppCompatActivity {
                 loan = new Loan(principal, interestRate, tenure, LocalDateTime.now(ZoneId.systemDefault()));
             }
             loanViewModel.setLoan(loan);
-            loanViewModel.calcPersonalMthlyInstalment();
-            loanViewModel.calcHousingMthlyInstalment();
+            loanViewModel.calcMthlyInstalment();
         });
         loanViewModel.getPersonalMonthlyInstalment().observe(this, installment -> {
             tvPersonalMonthlyInstallment.setText("Personal Loan Monthly Installment: " + installment);
