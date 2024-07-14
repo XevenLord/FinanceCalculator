@@ -14,6 +14,8 @@ import com.example.financecalculator.databinding.ActivityMainBinding;
 import com.example.financecalculator.model.Loan;
 import com.example.financecalculator.viewmodel.LoanViewModel;
 
+import com.google.firebase.FirebaseApp;
+
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 
@@ -24,6 +26,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         ActivityMainBinding binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
+        FirebaseApp.initializeApp(this);
         loanViewModel = new ViewModelProvider(this).get(LoanViewModel.class);
         binding.setViewModel(loanViewModel);
         binding.setLifecycleOwner(this);

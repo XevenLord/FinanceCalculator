@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "772119128695",
+    "project_id": "loan-calcula",
+    "storage_bucket": "loan-calcula.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:772119128695:android:07b677da6e365f66c9b472",
+        "android_client_info": {
+          "package_name": "com.example.financecalculator"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDZCewfEkGiPB-2C_kxSPBmvxCCl5wDBkM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
