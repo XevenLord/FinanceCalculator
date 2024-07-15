@@ -1,17 +1,15 @@
 package com.example.financecalculator.view;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.financecalculator.R;
-import com.example.financecalculator.databinding.ActivityResultBinding;
 import com.example.financecalculator.viewmodel.LoanViewModel;
+import com.example.financecalculator.store.ViewModelStoreHolder;
 
 public class ResultActivity extends AppCompatActivity {
     private LoanViewModel loanViewModel;
@@ -19,10 +17,12 @@ public class ResultActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        ActivityResultBinding binding = DataBindingUtil.setContentView(this, R.layout.activity_result);
-        loanViewModel = new ViewModelProvider(this).get(LoanViewModel.class);
-        binding.setViewModel(loanViewModel);
-        binding.setLifecycleOwner(this);
+        setContentView(R.layout.activity_result);
+
+        loanViewModel = new ViewModelProvider(
+                ViewModelStoreHolder.getInstance(),
+                ViewModelProvider.AndroidViewModelFactory.getInstance(getApplication())
+        ).get(LoanViewModel.class);
 
         TextView tvPersonalMonthlyInstallment = findViewById(R.id.tv_personal_monthly_installment);
         TextView tvHousingMonthlyInstallment = findViewById(R.id.tv_housing_monthly_installment);
@@ -37,8 +37,7 @@ public class ResultActivity extends AppCompatActivity {
         });
 
         btnBack.setOnClickListener(v -> {
-            Intent intent = new Intent(ResultActivity.this, InputActivity.class);
-            startActivity(intent);
+            finish(); // Close this activity and return to InputActivity
         });
     }
 }

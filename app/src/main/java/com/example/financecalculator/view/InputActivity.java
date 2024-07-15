@@ -6,13 +6,12 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.financecalculator.R;
-import com.example.financecalculator.databinding.ActivityInputBinding;
 import com.example.financecalculator.model.Loan;
 import com.example.financecalculator.viewmodel.LoanViewModel;
+import com.example.financecalculator.store.ViewModelStoreHolder;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -23,10 +22,12 @@ public class InputActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        ActivityInputBinding binding = DataBindingUtil.setContentView(this, R.layout.activity_input);
-        loanViewModel = new ViewModelProvider(this).get(LoanViewModel.class);
-        binding.setViewModel(loanViewModel);
-        binding.setLifecycleOwner(this);
+        setContentView(R.layout.activity_input);
+
+        loanViewModel = new ViewModelProvider(
+                ViewModelStoreHolder.getInstance(),
+                ViewModelProvider.AndroidViewModelFactory.getInstance(getApplication())
+        ).get(LoanViewModel.class);
 
         EditText etPrincipal = findViewById(R.id.et_principal);
         EditText etInterestRate = findViewById(R.id.et_interest_rate);
@@ -38,7 +39,8 @@ public class InputActivity extends AppCompatActivity {
             double interestRate = Double.parseDouble(etInterestRate.getText().toString());
             int tenure = Integer.parseInt(etTenure.getText().toString());
 
-            loanViewModel.setLoan(new Loan(principal, interestRate, tenure, LocalDateTime.now(ZoneId.systemDefault())));
+            Loan loan = new Loan(principal, interestRate, tenure, LocalDateTime.now(ZoneId.systemDefault()));
+            loanViewModel.setLoan(loan);
             loanViewModel.calcMthlyInstalment();
 
             Intent intent = new Intent(InputActivity.this, ResultActivity.class);
