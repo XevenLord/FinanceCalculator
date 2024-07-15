@@ -3,11 +3,12 @@ package com.example.financecalculator.model;
 public class UserDto {
     private String username;
     private String password;
+    private String email;
     private int birthYear;
 
-    public UserDto(String username, String password, int birthYear) {
+    public UserDto(String username, String email, int birthYear) {
         this.username = username;
-        this.password = password;
+        this.email = email;
         this.birthYear = birthYear;
     }
 
@@ -33,5 +34,13 @@ public class UserDto {
 
     public void setBirthYear(int birthYear) {
         this.birthYear = birthYear;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 }
