@@ -28,16 +28,21 @@
         <activity
             android:name=".view.LoginActivity"
             android:exported="true"
-            android:theme="@style/Theme.FinanceCalculator">
-        </activity>
+            android:theme="@style/Theme.FinanceCalculator"></activity>
 
         <!-- MainActivity -->
         <activity
             android:name=".view.MainActivity"
             android:exported="true"
-            android:theme="@style/Theme.FinanceCalculator">
-        </activity>
-
+            android:theme="@style/Theme.FinanceCalculator"></activity>
+        <activity
+            android:name=".view.InputActivity"
+            android:exported="true"
+            android:theme="@style/Theme.FinanceCalculator"></activity>
+        <activity
+            android:name=".view.ResultActivity"
+            android:exported="true"
+            android:theme="@style/Theme.FinanceCalculator" />
     </application>
 
 </manifest>
