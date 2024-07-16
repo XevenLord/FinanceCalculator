@@ -11,6 +11,14 @@
         android:orientation="vertical"
         android:padding="16dp">
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Enter Loan Info"
+            android:textSize="24sp"
+            android:layout_gravity="center"
+            android:padding="8dp"/>
+
         <EditText
             android:id="@+id/et_principal"
             android:layout_width="match_parent"
@@ -34,5 +42,13 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Calculate" />
+
+        <Button
+            android:id="@+id/btn_clear"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:text="Clear Inputs"
+            android:layout_marginTop="16dp" />
     </LinearLayout>
 </layout>

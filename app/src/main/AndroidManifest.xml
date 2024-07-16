@@ -30,11 +30,6 @@
             android:exported="true"
             android:theme="@style/Theme.FinanceCalculator"></activity>
 
-        <!-- MainActivity -->
-        <activity
-            android:name=".view.MainActivity"
-            android:exported="true"
-            android:theme="@style/Theme.FinanceCalculator"></activity>
         <activity
             android:name=".view.InputActivity"
             android:exported="true"

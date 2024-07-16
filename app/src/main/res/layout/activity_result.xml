@@ -12,16 +12,103 @@
         android:padding="16dp">
 
         <TextView
-            android:id="@+id/tv_personal_monthly_installment"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Personal Loan Monthly Installment: " />
+            android:text="Loan Calculation Result"
+            android:textSize="24sp"
+            android:layout_gravity="center"
+            android:padding="8dp"/>
 
-        <TextView
-            android:id="@+id/tv_housing_monthly_installment"
+        <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Housing Loan Monthly Installment: " />
+            android:layout_height="0dp"
+            android:layout_weight="1">
+
+            <TableLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:stretchColumns="1"
+                android:layout_marginBottom="16dp">
+
+                <TableRow>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Personal Loan Monthly Installment: "
+                        android:padding="8dp" />
+                    <TextView
+                        android:id="@+id/tv_personal_monthly_installment"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:padding="8dp" />
+                </TableRow>
+
+                <TableRow>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Housing Loan Monthly Installment: "
+                        android:padding="8dp" />
+                    <TextView
+                        android:id="@+id/tv_housing_monthly_installment"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:padding="8dp" />
+                </TableRow>
+
+                <TableRow>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Personal Loan Total Amount: "
+                        android:padding="8dp" />
+                    <TextView
+                        android:id="@+id/tv_personal_total_amount"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:padding="8dp" />
+                </TableRow>
+
+                <TableRow>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Housing Loan Total Amount: "
+                        android:padding="8dp" />
+                    <TextView
+                        android:id="@+id/tv_housing_total_amount"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:padding="8dp" />
+                </TableRow>
+
+                <TableRow>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Personal Loan Last Payment Date: "
+                        android:padding="8dp" />
+                    <TextView
+                        android:id="@+id/tv_personal_last_payment_date"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:padding="8dp" />
+                </TableRow>
+
+                <TableRow>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Housing Loan Last Payment Date: "
+                        android:padding="8dp" />
+                    <TextView
+                        android:id="@+id/tv_housing_last_payment_date"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:padding="8dp" />
+                </TableRow>
+            </TableLayout>
+        </ScrollView>
 
         <Button
             android:id="@+id/btn_back"

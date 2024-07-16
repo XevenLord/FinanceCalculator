@@ -11,6 +11,7 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.example.financecalculator.R;
 import com.example.financecalculator.model.UserDto;
+import com.example.financecalculator.viewmodel.LoanViewModel;
 import com.example.financecalculator.viewmodel.UserViewModel;
 import com.example.financecalculator.store.ViewModelStoreHolder;
 import com.google.firebase.auth.FirebaseAuth;
@@ -28,6 +29,7 @@ public class LoginActivity extends AppCompatActivity {
 
     private FirebaseAuth mAuth;
     private UserViewModel userViewModel;
+    private LoanViewModel loanViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,6 +46,11 @@ public class LoginActivity extends AppCompatActivity {
                 ViewModelStoreHolder.getInstance(),
                 ViewModelProvider.AndroidViewModelFactory.getInstance(getApplication())
         ).get(UserViewModel.class);
+
+        loanViewModel = new ViewModelProvider(
+                ViewModelStoreHolder.getInstance(),
+                ViewModelProvider.AndroidViewModelFactory.getInstance(getApplication())
+        ).get(LoanViewModel.class);
 
         btnLogin.setOnClickListener(v -> {
             String username = etUsername.getText().toString();
@@ -87,6 +94,7 @@ public class LoginActivity extends AppCompatActivity {
                     if (user != null) {
                         user.setUid(userId);
                         userViewModel.setUser(user);
+                        loanViewModel.setUser(user);
                         Intent intent = new Intent(LoginActivity.this, InputActivity.class);
                         startActivity(intent);
                         finish();

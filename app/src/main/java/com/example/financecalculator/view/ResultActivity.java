@@ -26,14 +26,34 @@ public class ResultActivity extends AppCompatActivity {
 
         TextView tvPersonalMonthlyInstallment = findViewById(R.id.tv_personal_monthly_installment);
         TextView tvHousingMonthlyInstallment = findViewById(R.id.tv_housing_monthly_installment);
+        TextView tvPersonalTotalAmount = findViewById(R.id.tv_personal_total_amount);
+        TextView tvHousingTotalAmount = findViewById(R.id.tv_housing_total_amount);
+        TextView tvPersonalLastPaymentDate = findViewById(R.id.tv_personal_last_payment_date);
+        TextView tvHousingLastPaymentDate = findViewById(R.id.tv_housing_last_payment_date);
         Button btnBack = findViewById(R.id.btn_back);
 
         loanViewModel.getPersonalMonthlyInstalment().observe(this, installment -> {
-            tvPersonalMonthlyInstallment.setText("Personal Loan Monthly Installment: " + installment);
+            tvPersonalMonthlyInstallment.setText(String.valueOf(installment));
         });
 
         loanViewModel.getHousingMonthlyInstalment().observe(this, installment -> {
-            tvHousingMonthlyInstallment.setText("Housing Loan Monthly Installment: " + installment);
+            tvHousingMonthlyInstallment.setText(String.valueOf(installment));
+        });
+
+        loanViewModel.getPersonalTotalAmt().observe(this, totalAmount -> {
+            tvPersonalTotalAmount.setText(String.valueOf(totalAmount));
+        });
+
+        loanViewModel.getHousingTotalAmt().observe(this, totalAmount -> {
+            tvHousingTotalAmount.setText(String.valueOf(totalAmount));
+        });
+
+        loanViewModel.getPersonalLastPaymentDate().observe(this, lastPaymentDate -> {
+            tvPersonalLastPaymentDate.setText(lastPaymentDate);
+        });
+
+        loanViewModel.getHousingLastPaymentDate().observe(this, lastPaymentDate -> {
+            tvHousingLastPaymentDate.setText(lastPaymentDate);
         });
 
         btnBack.setOnClickListener(v -> {

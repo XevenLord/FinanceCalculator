@@ -2,17 +2,14 @@ package com.example.financecalculator.view;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.financecalculator.R;
 import com.example.financecalculator.model.Loan;
-import com.example.financecalculator.model.UserDto;
 import com.example.financecalculator.viewmodel.LoanViewModel;
 import com.example.financecalculator.store.ViewModelStoreHolder;
 import com.example.financecalculator.viewmodel.UserViewModel;
@@ -43,6 +40,7 @@ public class InputActivity extends AppCompatActivity {
         EditText etInterestRate = findViewById(R.id.et_interest_rate);
         EditText etTenure = findViewById(R.id.et_tenure);
         Button btnCalculate = findViewById(R.id.btn_calculate);
+        Button btnClear = findViewById(R.id.btn_clear);
 
         btnCalculate.setOnClickListener(v -> {
             double principal = Double.parseDouble(etPrincipal.getText().toString());
@@ -55,6 +53,12 @@ public class InputActivity extends AppCompatActivity {
 
             Intent intent = new Intent(InputActivity.this, ResultActivity.class);
             startActivity(intent);
+        });
+
+        btnClear.setOnClickListener(v -> {
+            etPrincipal.setText("");
+            etInterestRate.setText("");
+            etTenure.setText("");
         });
     }
 }

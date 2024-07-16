@@ -7,15 +7,14 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
-import com.example.financecalculator.model.AmortizationSchedule;
 import com.example.financecalculator.model.Loan;
+import com.example.financecalculator.model.UserDto;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.ArrayList;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
+import java.util.Locale;
 
 public class LoanViewModel extends AndroidViewModel {
 
@@ -24,9 +23,9 @@ public class LoanViewModel extends AndroidViewModel {
     private MutableLiveData<Double> personalMonthlyInstalment = new MutableLiveData<>();
     private MutableLiveData<Double> housingTotalAmt = new MutableLiveData<>();
     private MutableLiveData<Double> personalTotalAmt = new MutableLiveData<>();
-    private MutableLiveData<Date> lastPaymentDate = new MutableLiveData<>();
-    private MutableLiveData<List<AmortizationSchedule>> housingAmortizationSchedule = new MutableLiveData<>();
-    private MutableLiveData<List<AmortizationSchedule>> personalAmortizationSchedule = new MutableLiveData<>();
+    private MutableLiveData<String> personalLastPaymentDate = new MutableLiveData<>();
+    private MutableLiveData<String> housingLastPaymentDate = new MutableLiveData<>();
+    private MutableLiveData<UserDto> user = new MutableLiveData<>();
 
     public LoanViewModel(@NonNull Application application) {
         super(application);
@@ -35,25 +34,30 @@ public class LoanViewModel extends AndroidViewModel {
     // Method to calculate monthly installments
     public void calcMthlyInstalment() {
         Loan loanData = loan.getValue();
-        if (loanData != null) {
+        UserDto userData = user.getValue();
+        if (loanData != null && userData != null) {
             double principal = loanData.getPrin();
             double rate = loanData.getIntrstRate() / 12 / 100;
-            int tenure = loanData.getTenure();
+            int pTenure = loanData.getTenure();
+            int hTenure = loanData.getTenure();
+
+            int currentYear = Calendar.getInstance().get(Calendar.YEAR);
+            int age = currentYear - userData.getBirthYear();
+
+            pTenure = Math.min(pTenure, Math.min(10, 60 - age));
+            hTenure = Math.min(hTenure, Math.min(35, 70 - age));
 
             // Calculate personal and housing loan monthly installment
-            personalMonthlyInstalment.setValue(personalLoanInstalment(principal, rate, tenure));
-            housingMonthlyInstalment.setValue(housingLoanInstalment(principal, rate, tenure));
+            personalMonthlyInstalment.setValue(personalLoanInstalment(principal, rate, pTenure));
+            housingMonthlyInstalment.setValue(housingLoanInstalment(principal, rate, hTenure));
 
             // Calculate total amounts
-            personalTotalAmt.setValue(roundToTwoDecimalPlaces(personalMonthlyInstalment.getValue() * tenure));
-            housingTotalAmt.setValue(roundToTwoDecimalPlaces(housingMonthlyInstalment.getValue() * tenure));
+            personalTotalAmt.setValue(roundToTwoDecimalPlaces(personalMonthlyInstalment.getValue() * pTenure));
+            housingTotalAmt.setValue(roundToTwoDecimalPlaces(housingMonthlyInstalment.getValue() * hTenure));
 
-            // Calculate last payment date
-            lastPaymentDate.setValue(calculateLastPaymentDate(tenure));
-
-            // Calculate amortization schedules
-            housingAmortizationSchedule.setValue(calculateHousingAmortizationSchedule(principal, rate, tenure));
-            personalAmortizationSchedule.setValue(calculatePersonalAmortizationSchedule(principal, rate, tenure));
+            // Calculate last payment dates
+            personalLastPaymentDate.setValue(calculateLastPaymentDate(pTenure));
+            housingLastPaymentDate.setValue(calculateLastPaymentDate(hTenure));
         }
     }
 
@@ -66,41 +70,15 @@ public class LoanViewModel extends AndroidViewModel {
     }
 
     private double roundToTwoDecimalPlaces(double value) {
-        BigDecimal bd = new BigDecimal(Double.toString(value));
-        bd = bd.setScale(2, RoundingMode.HALF_UP);
+        BigDecimal bd = new BigDecimal(value).setScale(2, RoundingMode.HALF_UP);
         return bd.doubleValue();
     }
 
-    private Date calculateLastPaymentDate(int tenure) {
+    private String calculateLastPaymentDate(int tenure) {
         Calendar calendar = Calendar.getInstance();
         calendar.add(Calendar.MONTH, tenure);
-        return calendar.getTime();
-    }
-
-    private List<AmortizationSchedule> calculateHousingAmortizationSchedule(double p, double r, int n) {
-        List<AmortizationSchedule> schedule = new ArrayList<>();
-        double monthlyInstalment = housingLoanInstalment(p, r, n);
-        double remainingPrincipal = p;
-        for (int i = 1; i <= n; i++) {
-            double interest = roundToTwoDecimalPlaces(remainingPrincipal * r);
-            double principalPaid = roundToTwoDecimalPlaces(monthlyInstalment - interest);
-            remainingPrincipal -= principalPaid;
-            schedule.add(new AmortizationSchedule(i, roundToTwoDecimalPlaces(remainingPrincipal), monthlyInstalment, interest, principalPaid));
-        }
-        return schedule;
-    }
-
-    private List<AmortizationSchedule> calculatePersonalAmortizationSchedule(double p, double r, int n) {
-        List<AmortizationSchedule> schedule = new ArrayList<>();
-        double monthlyInstalment = personalLoanInstalment(p, r, n);
-        double remainingPrincipal = p;
-        for (int i = 1; i <= n; i++) {
-            double interest = roundToTwoDecimalPlaces(remainingPrincipal * r);
-            double principalPaid = roundToTwoDecimalPlaces(monthlyInstalment - interest);
-            remainingPrincipal -= principalPaid;
-            schedule.add(new AmortizationSchedule(i, roundToTwoDecimalPlaces(remainingPrincipal), monthlyInstalment, interest, principalPaid));
-        }
-        return schedule;
+        SimpleDateFormat dateFormat = new SimpleDateFormat("MMMM yyyy", Locale.getDefault());
+        return dateFormat.format(calendar.getTime());
     }
 
     public LiveData<Double> getHousingMonthlyInstalment() {
@@ -119,16 +97,12 @@ public class LoanViewModel extends AndroidViewModel {
         return personalTotalAmt;
     }
 
-    public LiveData<Date> getLastPaymentDate() {
-        return lastPaymentDate;
+    public LiveData<String> getHousingLastPaymentDate() {
+        return housingLastPaymentDate;
     }
 
-    public LiveData<List<AmortizationSchedule>> getHousingAmortizationSchedule() {
-        return housingAmortizationSchedule;
-    }
-
-    public LiveData<List<AmortizationSchedule>> getPersonalAmortizationSchedule() {
-        return personalAmortizationSchedule;
+    public LiveData<String> getPersonalLastPaymentDate() {
+        return personalLastPaymentDate;
     }
 
     public void setLoan(Loan loan) {
@@ -137,5 +111,13 @@ public class LoanViewModel extends AndroidViewModel {
 
     public LiveData<Loan> getLoan() {
         return loan;
+    }
+
+    public void setUser(UserDto user) {
+        this.user.setValue(user);
+    }
+
+    public LiveData<UserDto> getUser() {
+        return user;
     }
 }
