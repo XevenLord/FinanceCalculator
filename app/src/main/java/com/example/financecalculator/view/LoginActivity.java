@@ -7,10 +7,17 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.example.financecalculator.R;
+import com.example.financecalculator.model.UserDto;
+import com.example.financecalculator.viewmodel.UserViewModel;
+import com.example.financecalculator.store.ViewModelStoreHolder;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -20,6 +27,7 @@ public class LoginActivity extends AppCompatActivity {
     private Button btnLogin;
 
     private FirebaseAuth mAuth;
+    private UserViewModel userViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,6 +40,10 @@ public class LoginActivity extends AppCompatActivity {
         btnSignup = findViewById(R.id.btn_signup);
 
         mAuth = FirebaseAuth.getInstance();
+        userViewModel = new ViewModelProvider(
+                ViewModelStoreHolder.getInstance(),
+                ViewModelProvider.AndroidViewModelFactory.getInstance(getApplication())
+        ).get(UserViewModel.class);
 
         btnLogin.setOnClickListener(v -> {
             String username = etUsername.getText().toString();
@@ -54,13 +66,38 @@ public class LoginActivity extends AppCompatActivity {
         mAuth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, task -> {
                     if (task.isSuccessful()) {
-                        FirebaseUser user = mAuth.getCurrentUser();
-                        Intent intent = new Intent(LoginActivity.this, InputActivity.class);
-                        startActivity(intent);
-                        finish();
+                        FirebaseUser firebaseUser = mAuth.getCurrentUser();
+                        if (firebaseUser != null) {
+                            fetchAndSetUserDetails(firebaseUser.getUid());
+                        }
                     } else {
                         Toast.makeText(LoginActivity.this, "Authentication failed.", Toast.LENGTH_SHORT).show();
                     }
                 });
     }
+
+    private void fetchAndSetUserDetails(String userId) {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        DocumentReference userRef = db.collection("users").document(userId);
+        userRef.get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                DocumentSnapshot document = task.getResult();
+                if (document.exists()) {
+                    UserDto user = document.toObject(UserDto.class);
+                    if (user != null) {
+                        user.setUid(userId);
+                        userViewModel.setUser(user);
+                        Intent intent = new Intent(LoginActivity.this, InputActivity.class);
+                        startActivity(intent);
+                        finish();
+                    }
+                } else {
+                    Toast.makeText(LoginActivity.this, "No such user exists.", Toast.LENGTH_SHORT).show();
+                }
+            } else {
+                Toast.makeText(LoginActivity.this, "Failed to fetch user details.", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
 }

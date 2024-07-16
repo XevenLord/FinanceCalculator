@@ -2,22 +2,27 @@ package com.example.financecalculator.view;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.financecalculator.R;
 import com.example.financecalculator.model.Loan;
+import com.example.financecalculator.model.UserDto;
 import com.example.financecalculator.viewmodel.LoanViewModel;
 import com.example.financecalculator.store.ViewModelStoreHolder;
+import com.example.financecalculator.viewmodel.UserViewModel;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 
 public class InputActivity extends AppCompatActivity {
     private LoanViewModel loanViewModel;
+    private UserViewModel userViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,6 +33,11 @@ public class InputActivity extends AppCompatActivity {
                 ViewModelStoreHolder.getInstance(),
                 ViewModelProvider.AndroidViewModelFactory.getInstance(getApplication())
         ).get(LoanViewModel.class);
+
+        userViewModel = new ViewModelProvider(
+                ViewModelStoreHolder.getInstance(),
+                ViewModelProvider.AndroidViewModelFactory.getInstance(getApplication())
+        ).get(UserViewModel.class);
 
         EditText etPrincipal = findViewById(R.id.et_principal);
         EditText etInterestRate = findViewById(R.id.et_interest_rate);
