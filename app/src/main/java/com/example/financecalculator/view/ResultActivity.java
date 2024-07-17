@@ -1,18 +1,21 @@
 package com.example.financecalculator.view;
 
 import android.os.Bundle;
-import android.widget.Button;
-import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.viewpager2.widget.ViewPager2;
 
 import com.example.financecalculator.R;
 import com.example.financecalculator.viewmodel.LoanViewModel;
-import com.example.financecalculator.store.ViewModelStoreHolder;
+import com.google.android.material.tabs.TabLayout;
+import com.google.android.material.tabs.TabLayoutMediator;
 
 public class ResultActivity extends AppCompatActivity {
+
     private LoanViewModel loanViewModel;
+    private TabLayout tabLayout;
+    private ViewPager2 viewPager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -20,44 +23,28 @@ public class ResultActivity extends AppCompatActivity {
         setContentView(R.layout.activity_result);
 
         loanViewModel = new ViewModelProvider(
-                ViewModelStoreHolder.getInstance(),
+                this,
                 ViewModelProvider.AndroidViewModelFactory.getInstance(getApplication())
         ).get(LoanViewModel.class);
 
-        TextView tvPersonalMonthlyInstallment = findViewById(R.id.tv_personal_monthly_installment);
-        TextView tvHousingMonthlyInstallment = findViewById(R.id.tv_housing_monthly_installment);
-        TextView tvPersonalTotalAmount = findViewById(R.id.tv_personal_total_amount);
-        TextView tvHousingTotalAmount = findViewById(R.id.tv_housing_total_amount);
-        TextView tvPersonalLastPaymentDate = findViewById(R.id.tv_personal_last_payment_date);
-        TextView tvHousingLastPaymentDate = findViewById(R.id.tv_housing_last_payment_date);
-        Button btnBack = findViewById(R.id.btn_back);
+        tabLayout = findViewById(R.id.tab_layout);
+        viewPager = findViewById(R.id.view_pager);
 
-        loanViewModel.getPersonalMonthlyInstalment().observe(this, installment -> {
-            tvPersonalMonthlyInstallment.setText(String.valueOf(installment));
-        });
+        // Set up ViewPager with adapter
+        ResultPagerAdapter adapter = new ResultPagerAdapter(this);
+        viewPager.setAdapter(adapter);
 
-        loanViewModel.getHousingMonthlyInstalment().observe(this, installment -> {
-            tvHousingMonthlyInstallment.setText(String.valueOf(installment));
-        });
+        new TabLayoutMediator(tabLayout, viewPager, (tab, position) -> {
+            switch (position) {
+                case 0:
+                    tab.setText("Personal");
+                    break;
+                case 1:
+                    tab.setText("Housing");
+                    break;
+            }
+        }).attach();
 
-        loanViewModel.getPersonalTotalAmt().observe(this, totalAmount -> {
-            tvPersonalTotalAmount.setText(String.valueOf(totalAmount));
-        });
-
-        loanViewModel.getHousingTotalAmt().observe(this, totalAmount -> {
-            tvHousingTotalAmount.setText(String.valueOf(totalAmount));
-        });
-
-        loanViewModel.getPersonalLastPaymentDate().observe(this, lastPaymentDate -> {
-            tvPersonalLastPaymentDate.setText(lastPaymentDate);
-        });
-
-        loanViewModel.getHousingLastPaymentDate().observe(this, lastPaymentDate -> {
-            tvHousingLastPaymentDate.setText(lastPaymentDate);
-        });
-
-        btnBack.setOnClickListener(v -> {
-            finish(); // Close this activity and return to InputActivity
-        });
+        findViewById(R.id.btn_back).setOnClickListener(v -> finish());
     }
 }
