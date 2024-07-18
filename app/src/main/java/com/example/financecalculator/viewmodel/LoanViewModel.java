@@ -48,8 +48,8 @@ public class LoanViewModel extends AndroidViewModel {
             int currentYear = Calendar.getInstance().get(Calendar.YEAR);
             int age = currentYear - userData.getBirthYear();
 
-            pTenure = Math.min(pTenure, Math.min(10, 60 - age));
-            hTenure = Math.min(hTenure, Math.min(35, 70 - age));
+            pTenure = Math.min(pTenure, Math.min(10 * 12, (60 - age) * 12));
+            hTenure = Math.min(hTenure, Math.min(35 * 12, (70 - age) * 12));
 
             // Store the number of repayment
             personalTenure.setValue(pTenure);

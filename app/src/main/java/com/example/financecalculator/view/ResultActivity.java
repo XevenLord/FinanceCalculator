@@ -1,15 +1,21 @@
 package com.example.financecalculator.view;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
-import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.viewpager.widget.ViewPager;
 
 import com.example.financecalculator.R;
 import com.example.financecalculator.viewmodel.LoanViewModel;
 import com.example.financecalculator.store.ViewModelStoreHolder;
+import com.google.android.material.tabs.TabLayout;
 
 public class ResultActivity extends AppCompatActivity {
     private LoanViewModel loanViewModel;
@@ -24,45 +30,64 @@ public class ResultActivity extends AppCompatActivity {
                 ViewModelProvider.AndroidViewModelFactory.getInstance(getApplication())
         ).get(LoanViewModel.class);
 
-        TextView tvPersonalMonthlyInstallment = findViewById(R.id.tv_personal_monthly_installment);
-        TextView tvHousingMonthlyInstallment = findViewById(R.id.tv_housing_monthly_installment);
-        TextView tvPersonalTotalAmount = findViewById(R.id.tv_personal_total_amount);
-        TextView tvHousingTotalAmount = findViewById(R.id.tv_housing_total_amount);
-        TextView tvPersonalLastPaymentDate = findViewById(R.id.tv_personal_last_payment_date);
-        TextView tvHousingLastPaymentDate = findViewById(R.id.tv_housing_last_payment_date);
-        TextView tvStartLoanPaymentDate = findViewById(R.id.tv_start_loan_payment_date);
-        Button btnBack = findViewById(R.id.btn_back);
+        double personalMonthlyInstalment = getIntent().getDoubleExtra("personalMonthlyInstalment", 0);
+        double housingMonthlyInstalment = getIntent().getDoubleExtra("housingMonthlyInstalment", 0);
+        double personalTotalAmount = getIntent().getDoubleExtra("personalTotalAmount", 0);
+        double housingTotalAmount = getIntent().getDoubleExtra("housingTotalAmount", 0);
+        String personalLastPaymentDate = getIntent().getStringExtra("personalLastPaymentDate");
+        String housingLastPaymentDate = getIntent().getStringExtra("housingLastPaymentDate");
 
-        loanViewModel.getPersonalMonthlyInstalment().observe(this, installment -> {
-            tvPersonalMonthlyInstallment.setText(String.valueOf(installment));
+        ViewPager viewPager = findViewById(R.id.view_pager);
+        TabLayout tabLayout = findViewById(R.id.tab_layout);
+        Button btnBackToInput = findViewById(R.id.btn_back_to_input);
+
+        btnBackToInput.setOnClickListener(v -> {
+            Intent intent = new Intent(ResultActivity.this, InputActivity.class);
+            startActivity(intent);
+            finish(); // Optional: finish the current activity to remove it from the back stack
         });
 
-        loanViewModel.getHousingMonthlyInstalment().observe(this, installment -> {
-            tvHousingMonthlyInstallment.setText(String.valueOf(installment));
-        });
+        FragmentPagerAdapter adapter = new FragmentPagerAdapter(getSupportFragmentManager()) {
+            @NonNull
+            @Override
+            public Fragment getItem(int position) {
+                Fragment fragment = null;
+                if (position == 0) {
+                    fragment = new PersonalLoanFragment();
+                    Bundle bundle = new Bundle();
+                    bundle.putDouble("personalMonthlyInstalment", personalMonthlyInstalment);
+                    bundle.putDouble("personalTotalAmount", personalTotalAmount);
+                    bundle.putString("personalLastPaymentDate", personalLastPaymentDate);
+                    fragment.setArguments(bundle);
+                } else if (position == 1) {
+                    fragment = new HousingLoanFragment();
+                    Bundle bundle = new Bundle();
+                    bundle.putDouble("housingMonthlyInstalment", housingMonthlyInstalment);
+                    bundle.putDouble("housingTotalAmount", housingTotalAmount);
+                    bundle.putString("housingLastPaymentDate", housingLastPaymentDate);
+                    fragment.setArguments(bundle);
+                }
+                return fragment;
+            }
 
-        loanViewModel.getPersonalTotalAmt().observe(this, totalAmount -> {
-            tvPersonalTotalAmount.setText(String.valueOf(totalAmount));
-        });
+            @Override
+            public int getCount() {
+                return 2;
+            }
 
-        loanViewModel.getHousingTotalAmt().observe(this, totalAmount -> {
-            tvHousingTotalAmount.setText(String.valueOf(totalAmount));
-        });
+            @Nullable
+            @Override
+            public CharSequence getPageTitle(int position) {
+                if (position == 0) {
+                    return "Personal Loan";
+                } else if (position == 1) {
+                    return "Housing Loan";
+                }
+                return null;
+            }
+        };
 
-        loanViewModel.getPersonalLastPaymentDate().observe(this, lastPaymentDate -> {
-            tvPersonalLastPaymentDate.setText(lastPaymentDate);
-        });
-
-        loanViewModel.getHousingLastPaymentDate().observe(this, lastPaymentDate -> {
-            tvHousingLastPaymentDate.setText(lastPaymentDate);
-        });
-
-        loanViewModel.getFormattedStartLoanPaymentDate().observe(this, startLoanPaymentDate -> {
-            tvStartLoanPaymentDate.setText(startLoanPaymentDate);
-        });
-
-        btnBack.setOnClickListener(v -> {
-            finish(); // Close this activity and return to InputActivity
-        });
+        viewPager.setAdapter(adapter);
+        tabLayout.setupWithViewPager(viewPager);
     }
 }

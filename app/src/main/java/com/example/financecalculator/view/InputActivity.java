@@ -6,6 +6,7 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.financecalculator.R;
@@ -51,8 +52,45 @@ public class InputActivity extends AppCompatActivity {
             loanViewModel.setLoan(loan);
             loanViewModel.calcMthlyInstalment();
 
-            Intent intent = new Intent(InputActivity.this, ResultActivity.class);
-            startActivity(intent);
+            // Observe the LiveData values
+            loanViewModel.getPersonalMonthlyInstalment().observe(this, new Observer<Double>() {
+                @Override
+                public void onChanged(Double personalMonthlyInstalment) {
+                    loanViewModel.getHousingMonthlyInstalment().observe(InputActivity.this, new Observer<Double>() {
+                        @Override
+                        public void onChanged(Double housingMonthlyInstalment) {
+                            loanViewModel.getPersonalTotalAmt().observe(InputActivity.this, new Observer<Double>() {
+                                @Override
+                                public void onChanged(Double personalTotalAmount) {
+                                    loanViewModel.getHousingTotalAmt().observe(InputActivity.this, new Observer<Double>() {
+                                        @Override
+                                        public void onChanged(Double housingTotalAmount) {
+                                            loanViewModel.getPersonalLastPaymentDate().observe(InputActivity.this, new Observer<String>() {
+                                                @Override
+                                                public void onChanged(String personalLastPaymentDate) {
+                                                    loanViewModel.getHousingLastPaymentDate().observe(InputActivity.this, new Observer<String>() {
+                                                        @Override
+                                                        public void onChanged(String housingLastPaymentDate) {
+                                                            Intent intent = new Intent(InputActivity.this, ResultActivity.class);
+                                                            intent.putExtra("personalMonthlyInstalment", personalMonthlyInstalment);
+                                                            intent.putExtra("housingMonthlyInstalment", housingMonthlyInstalment);
+                                                            intent.putExtra("personalTotalAmount", personalTotalAmount);
+                                                            intent.putExtra("housingTotalAmount", housingTotalAmount);
+                                                            intent.putExtra("personalLastPaymentDate", personalLastPaymentDate);
+                                                            intent.putExtra("housingLastPaymentDate", housingLastPaymentDate);
+                                                            startActivity(intent);
+                                                        }
+                                                    });
+                                                }
+                                            });
+                                        }
+                                    });
+                                }
+                            });
+                        }
+                    });
+                }
+            });
         });
 
         btnClear.setOnClickListener(v -> {
