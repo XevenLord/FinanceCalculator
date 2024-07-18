@@ -22,10 +22,7 @@ public class ResultActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_result);
 
-        loanViewModel = new ViewModelProvider(
-                this,
-                ViewModelProvider.AndroidViewModelFactory.getInstance(getApplication())
-        ).get(LoanViewModel.class);
+        loanViewModel = new ViewModelProvider(this).get(LoanViewModel.class);
 
         tabLayout = findViewById(R.id.tab_layout);
         viewPager = findViewById(R.id.view_pager);

@@ -19,19 +19,21 @@ public class PersonalLoanResultFragment extends Fragment {
 
     private LoanViewModel loanViewModel;
 
-    @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_personal_loan_result, container, false);
+    public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
 
-        loanViewModel = new ViewModelProvider(this).get(LoanViewModel.class);
+        // Initialize LoanViewModel using ViewModelProvider
+        loanViewModel = new ViewModelProvider(requireActivity()).get(LoanViewModel.class);
 
+        // Initialize TextViews
         TextView tvPersonalMonthlyInstallment = view.findViewById(R.id.tv_personal_monthly_installment);
         TextView tvPersonalTotalAmount = view.findViewById(R.id.tv_personal_total_amount);
         TextView tvPersonalLastPaymentDate = view.findViewById(R.id.tv_personal_last_payment_date);
 
+        // Observe LiveData from LoanViewModel
         loanViewModel.getPersonalMonthlyInstalment().observe(getViewLifecycleOwner(), installment -> {
-            Log.d("Personall", String.valueOf(installment));
+            Log.d("Personal", String.valueOf(installment));
             tvPersonalMonthlyInstallment.setText(String.valueOf(installment));
         });
 
@@ -42,7 +44,12 @@ public class PersonalLoanResultFragment extends Fragment {
         loanViewModel.getPersonalLastPaymentDate().observe(getViewLifecycleOwner(), lastPaymentDate -> {
             tvPersonalLastPaymentDate.setText(lastPaymentDate);
         });
+    }
 
-        return view;
+    @Nullable
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        return inflater.inflate(R.layout.fragment_personal_loan_result, container, false);
     }
 }

@@ -11,7 +11,6 @@ import androidx.lifecycle.ViewModelProvider;
 import com.example.financecalculator.R;
 import com.example.financecalculator.model.Loan;
 import com.example.financecalculator.viewmodel.LoanViewModel;
-import com.example.financecalculator.store.ViewModelStoreHolder;
 import com.example.financecalculator.viewmodel.UserViewModel;
 
 import java.time.LocalDateTime;
@@ -26,15 +25,11 @@ public class InputActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_input);
 
-        loanViewModel = new ViewModelProvider(
-                ViewModelStoreHolder.getInstance(),
-                ViewModelProvider.AndroidViewModelFactory.getInstance(getApplication())
-        ).get(LoanViewModel.class);
+        // Initialize LoanViewModel using ViewModelProvider
+        loanViewModel = new ViewModelProvider(this).get(LoanViewModel.class);
 
-        userViewModel = new ViewModelProvider(
-                ViewModelStoreHolder.getInstance(),
-                ViewModelProvider.AndroidViewModelFactory.getInstance(getApplication())
-        ).get(UserViewModel.class);
+        // Example of initializing UserViewModel, adjust as per your actual implementation
+        userViewModel = new ViewModelProvider(this).get(UserViewModel.class);
 
         EditText etPrincipal = findViewById(R.id.et_principal);
         EditText etInterestRate = findViewById(R.id.et_interest_rate);
@@ -43,19 +38,27 @@ public class InputActivity extends AppCompatActivity {
         Button btnClear = findViewById(R.id.btn_clear);
 
         btnCalculate.setOnClickListener(v -> {
+            // Parse input values
             double principal = Double.parseDouble(etPrincipal.getText().toString());
             double interestRate = Double.parseDouble(etInterestRate.getText().toString());
             int tenure = Integer.parseInt(etTenure.getText().toString());
 
+            // Create Loan object
             Loan loan = new Loan(principal, interestRate, tenure, LocalDateTime.now(ZoneId.systemDefault()));
+
+            // Set Loan object to ViewModel
             loanViewModel.setLoan(loan);
+
+            // Calculate monthly installments
             loanViewModel.calcMthlyInstalment();
 
+            // Start ResultActivity
             Intent intent = new Intent(InputActivity.this, ResultActivity.class);
             startActivity(intent);
         });
 
         btnClear.setOnClickListener(v -> {
+            // Clear EditText fields
             etPrincipal.setText("");
             etInterestRate.setText("");
             etTenure.setText("");

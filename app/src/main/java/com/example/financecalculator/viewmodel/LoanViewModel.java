@@ -1,11 +1,8 @@
 package com.example.financecalculator.viewmodel;
 
-import android.app.Application;
-
-import androidx.annotation.NonNull;
-import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.ViewModel;
 
 import com.example.financecalculator.model.Loan;
 import com.example.financecalculator.model.UserDto;
@@ -16,7 +13,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
 
-public class LoanViewModel extends AndroidViewModel {
+public class LoanViewModel extends ViewModel {
 
     private MutableLiveData<Loan> loan = new MutableLiveData<>();
     private MutableLiveData<Double> housingMonthlyInstalment = new MutableLiveData<>();
@@ -29,10 +26,6 @@ public class LoanViewModel extends AndroidViewModel {
     private MutableLiveData<Integer> personalTenure = new MutableLiveData<>();
     private MutableLiveData<Integer> housingTenure = new MutableLiveData<>();
     private MutableLiveData<Calendar> startLoanPaymentDate = new MutableLiveData<>(Calendar.getInstance());
-
-    public LoanViewModel(@NonNull Application application) {
-        super(application);
-    }
 
     // Method to calculate monthly installments
     public void calcMthlyInstalment() {

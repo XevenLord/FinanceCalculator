@@ -24,24 +24,30 @@ public class HousingLoanResultFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_housing_loan_result, container, false);
 
-        loanViewModel = new ViewModelProvider(this).get(LoanViewModel.class);
+        // Initialize LoanViewModel using ViewModelProvider
+        loanViewModel = new ViewModelProvider(requireActivity()).get(LoanViewModel.class);
 
+        // Initialize TextViews
         TextView tvHousingMonthlyInstallment = view.findViewById(R.id.tv_housing_monthly_installment);
         TextView tvHousingTotalAmount = view.findViewById(R.id.tv_housing_total_amount);
         TextView tvHousingLastPaymentDate = view.findViewById(R.id.tv_housing_last_payment_date);
 
-        Log.d("creattingg", "frdsfsdfsdf");
+        // Log for debugging purposes
+        Log.d("HousingLoanResult", "Fragment created");
 
+        // Observe LiveData from LoanViewModel
         loanViewModel.getHousingMonthlyInstalment().observe(getViewLifecycleOwner(), installment -> {
-            Log.d("Housinggg", String.valueOf(installment));
+            Log.d("HousingLoanResult", "Monthly installment updated: " + installment);
             tvHousingMonthlyInstallment.setText(String.valueOf(installment));
         });
 
         loanViewModel.getHousingTotalAmt().observe(getViewLifecycleOwner(), totalAmount -> {
+            Log.d("HousingLoanResult", "Total amount updated: " + totalAmount);
             tvHousingTotalAmount.setText(String.valueOf(totalAmount));
         });
 
         loanViewModel.getHousingLastPaymentDate().observe(getViewLifecycleOwner(), lastPaymentDate -> {
+            Log.d("HousingLoanResult", "Last payment date updated: " + lastPaymentDate);
             tvHousingLastPaymentDate.setText(lastPaymentDate);
         });
 

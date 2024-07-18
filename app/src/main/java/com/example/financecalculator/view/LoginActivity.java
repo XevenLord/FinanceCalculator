@@ -13,7 +13,6 @@ import com.example.financecalculator.R;
 import com.example.financecalculator.model.UserDto;
 import com.example.financecalculator.viewmodel.LoanViewModel;
 import com.example.financecalculator.viewmodel.UserViewModel;
-import com.example.financecalculator.store.ViewModelStoreHolder;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
@@ -42,15 +41,9 @@ public class LoginActivity extends AppCompatActivity {
         btnSignup = findViewById(R.id.btn_signup);
 
         mAuth = FirebaseAuth.getInstance();
-        userViewModel = new ViewModelProvider(
-                ViewModelStoreHolder.getInstance(),
-                ViewModelProvider.AndroidViewModelFactory.getInstance(getApplication())
-        ).get(UserViewModel.class);
+        userViewModel = new ViewModelProvider(this).get(UserViewModel.class);
 
-        loanViewModel = new ViewModelProvider(
-                ViewModelStoreHolder.getInstance(),
-                ViewModelProvider.AndroidViewModelFactory.getInstance(getApplication())
-        ).get(LoanViewModel.class);
+        loanViewModel = new ViewModelProvider(this).get(LoanViewModel.class);
 
         btnLogin.setOnClickListener(v -> {
             String username = etUsername.getText().toString();
