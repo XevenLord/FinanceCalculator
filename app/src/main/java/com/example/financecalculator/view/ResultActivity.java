@@ -30,6 +30,7 @@ public class ResultActivity extends AppCompatActivity {
         TextView tvHousingTotalAmount = findViewById(R.id.tv_housing_total_amount);
         TextView tvPersonalLastPaymentDate = findViewById(R.id.tv_personal_last_payment_date);
         TextView tvHousingLastPaymentDate = findViewById(R.id.tv_housing_last_payment_date);
+        TextView tvStartLoanPaymentDate = findViewById(R.id.tv_start_loan_payment_date);
         Button btnBack = findViewById(R.id.btn_back);
 
         loanViewModel.getPersonalMonthlyInstalment().observe(this, installment -> {
@@ -54,6 +55,10 @@ public class ResultActivity extends AppCompatActivity {
 
         loanViewModel.getHousingLastPaymentDate().observe(this, lastPaymentDate -> {
             tvHousingLastPaymentDate.setText(lastPaymentDate);
+        });
+
+        loanViewModel.getFormattedStartLoanPaymentDate().observe(this, startLoanPaymentDate -> {
+            tvStartLoanPaymentDate.setText(startLoanPaymentDate);
         });
 
         btnBack.setOnClickListener(v -> {

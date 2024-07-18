@@ -26,6 +26,9 @@ public class LoanViewModel extends AndroidViewModel {
     private MutableLiveData<String> personalLastPaymentDate = new MutableLiveData<>();
     private MutableLiveData<String> housingLastPaymentDate = new MutableLiveData<>();
     private MutableLiveData<UserDto> user = new MutableLiveData<>();
+    private MutableLiveData<Integer> personalTenure = new MutableLiveData<>();
+    private MutableLiveData<Integer> housingTenure = new MutableLiveData<>();
+    private MutableLiveData<Calendar> startLoanPaymentDate = new MutableLiveData<>(Calendar.getInstance());
 
     public LoanViewModel(@NonNull Application application) {
         super(application);
@@ -35,7 +38,8 @@ public class LoanViewModel extends AndroidViewModel {
     public void calcMthlyInstalment() {
         Loan loanData = loan.getValue();
         UserDto userData = user.getValue();
-        if (loanData != null && userData != null) {
+        Calendar startDate = startLoanPaymentDate.getValue();
+        if (loanData != null && userData != null && startDate != null) {
             double principal = loanData.getPrin();
             double rate = loanData.getIntrstRate() / 12 / 100;
             int pTenure = loanData.getTenure();
@@ -47,6 +51,10 @@ public class LoanViewModel extends AndroidViewModel {
             pTenure = Math.min(pTenure, Math.min(10, 60 - age));
             hTenure = Math.min(hTenure, Math.min(35, 70 - age));
 
+            // Store the number of repayment
+            personalTenure.setValue(pTenure);
+            housingTenure.setValue(hTenure);
+
             // Calculate personal and housing loan monthly installment
             personalMonthlyInstalment.setValue(personalLoanInstalment(principal, rate, pTenure));
             housingMonthlyInstalment.setValue(housingLoanInstalment(principal, rate, hTenure));
@@ -56,8 +64,8 @@ public class LoanViewModel extends AndroidViewModel {
             housingTotalAmt.setValue(roundToTwoDecimalPlaces(housingMonthlyInstalment.getValue() * hTenure));
 
             // Calculate last payment dates
-            personalLastPaymentDate.setValue(calculateLastPaymentDate(pTenure));
-            housingLastPaymentDate.setValue(calculateLastPaymentDate(hTenure));
+            personalLastPaymentDate.setValue(calculateLastPaymentDate(startDate, pTenure));
+            housingLastPaymentDate.setValue(calculateLastPaymentDate(startDate, hTenure));
         }
     }
 
@@ -74,8 +82,8 @@ public class LoanViewModel extends AndroidViewModel {
         return bd.doubleValue();
     }
 
-    private String calculateLastPaymentDate(int tenure) {
-        Calendar calendar = Calendar.getInstance();
+    private String calculateLastPaymentDate(Calendar startDate, int tenure) {
+        Calendar calendar = (Calendar) startDate.clone();
         calendar.add(Calendar.MONTH, tenure);
         SimpleDateFormat dateFormat = new SimpleDateFormat("MMMM yyyy", Locale.getDefault());
         return dateFormat.format(calendar.getTime());
@@ -119,5 +127,24 @@ public class LoanViewModel extends AndroidViewModel {
 
     public LiveData<UserDto> getUser() {
         return user;
+    }
+
+    public LiveData<Calendar> getStartLoanPaymentDate() {
+        return startLoanPaymentDate;
+    }
+
+    public LiveData<String> getFormattedStartLoanPaymentDate() {
+        MutableLiveData<String> formattedDate = new MutableLiveData<>();
+        startLoanPaymentDate.observeForever(calendar -> {
+            SimpleDateFormat dateFormat = new SimpleDateFormat("MMMM yyyy", Locale.getDefault());
+            formattedDate.setValue(dateFormat.format(calendar.getTime()));
+        });
+        return formattedDate;
+    }
+
+    public void setStartLoanPaymentDate(Calendar startLoanPaymentDate) {
+        this.startLoanPaymentDate.setValue(startLoanPaymentDate);
+        // Recalculate installments and last payment dates when start date changes
+        calcMthlyInstalment();
     }
 }

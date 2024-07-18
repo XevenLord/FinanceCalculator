@@ -107,6 +107,20 @@
                         android:layout_height="wrap_content"
                         android:padding="8dp" />
                 </TableRow>
+
+                <TableRow>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Start Loan Payment Date: "
+                        android:padding="8dp" />
+                    <TextView
+                        android:id="@+id/tv_start_loan_payment_date"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:padding="8dp" />
+                </TableRow>
+
             </TableLayout>
         </ScrollView>
 
