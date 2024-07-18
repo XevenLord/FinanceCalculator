@@ -17,6 +17,7 @@ import com.example.financecalculator.viewmodel.UserViewModel;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.ArrayList;
 
 public class InputActivity extends AppCompatActivity {
     private LoanViewModel loanViewModel;
@@ -71,14 +72,20 @@ public class InputActivity extends AppCompatActivity {
                                                     loanViewModel.getHousingLastPaymentDate().observe(InputActivity.this, new Observer<String>() {
                                                         @Override
                                                         public void onChanged(String housingLastPaymentDate) {
-                                                            Intent intent = new Intent(InputActivity.this, ResultActivity.class);
-                                                            intent.putExtra("personalMonthlyInstalment", personalMonthlyInstalment);
-                                                            intent.putExtra("housingMonthlyInstalment", housingMonthlyInstalment);
-                                                            intent.putExtra("personalTotalAmount", personalTotalAmount);
-                                                            intent.putExtra("housingTotalAmount", housingTotalAmount);
-                                                            intent.putExtra("personalLastPaymentDate", personalLastPaymentDate);
-                                                            intent.putExtra("housingLastPaymentDate", housingLastPaymentDate);
-                                                            startActivity(intent);
+                                                            loanViewModel.getPersonalLoanSchedule().observe(InputActivity.this, personalLoanSchedules -> {
+                                                                loanViewModel.getHousingLoanSchedule().observe(InputActivity.this, housingLoanSchedules -> {
+                                                                    Intent intent = new Intent(InputActivity.this, ResultActivity.class);
+                                                                    intent.putExtra("personalMonthlyInstalment", personalMonthlyInstalment);
+                                                                    intent.putExtra("housingMonthlyInstalment", housingMonthlyInstalment);
+                                                                    intent.putExtra("personalTotalAmount", personalTotalAmount);
+                                                                    intent.putExtra("housingTotalAmount", housingTotalAmount);
+                                                                    intent.putExtra("personalLastPaymentDate", personalLastPaymentDate);
+                                                                    intent.putExtra("housingLastPaymentDate", housingLastPaymentDate);
+                                                                    intent.putExtra("personalLoanSchedule", new ArrayList<>(personalLoanSchedules));
+                                                                    intent.putExtra("housingLoanSchedule", new ArrayList<>(housingLoanSchedules));
+                                                                    startActivity(intent);
+                                                                });
+                                                            });
                                                         }
                                                     });
                                                 }

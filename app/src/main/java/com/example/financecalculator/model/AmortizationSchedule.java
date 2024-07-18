@@ -1,6 +1,9 @@
 package com.example.financecalculator.model;
 
-public class AmortizationSchedule {
+import android.os.Parcel;
+import android.os.Parcelable;
+
+public class AmortizationSchedule implements Parcelable {
     private int paymentNumber;
     private double beginningBalance;
     private double monthlyRepayment;
@@ -13,6 +16,40 @@ public class AmortizationSchedule {
         this.monthlyRepayment = monthlyRepayment;
         this.interestPaid = interestPaid;
         this.principalPaid = principalPaid;
+    }
+
+    protected AmortizationSchedule(Parcel in) {
+        paymentNumber = in.readInt();
+        beginningBalance = in.readDouble();
+        monthlyRepayment = in.readDouble();
+        interestPaid = in.readDouble();
+        principalPaid = in.readDouble();
+    }
+
+    public static final Creator<AmortizationSchedule> CREATOR = new Creator<AmortizationSchedule>() {
+        @Override
+        public AmortizationSchedule createFromParcel(Parcel in) {
+            return new AmortizationSchedule(in);
+        }
+
+        @Override
+        public AmortizationSchedule[] newArray(int size) {
+            return new AmortizationSchedule[size];
+        }
+    };
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(paymentNumber);
+        dest.writeDouble(beginningBalance);
+        dest.writeDouble(monthlyRepayment);
+        dest.writeDouble(interestPaid);
+        dest.writeDouble(principalPaid);
     }
 
     public int getPaymentNumber() {

@@ -3,6 +3,7 @@ package com.example.financecalculator.view;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -11,11 +12,16 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.viewpager.widget.ViewPager;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.financecalculator.R;
+import com.example.financecalculator.model.AmortizationSchedule;
 import com.example.financecalculator.viewmodel.LoanViewModel;
 import com.example.financecalculator.store.ViewModelStoreHolder;
 import com.google.android.material.tabs.TabLayout;
+
+import java.util.ArrayList;
 
 public class ResultActivity extends AppCompatActivity {
     private LoanViewModel loanViewModel;
@@ -36,6 +42,8 @@ public class ResultActivity extends AppCompatActivity {
         double housingTotalAmount = getIntent().getDoubleExtra("housingTotalAmount", 0);
         String personalLastPaymentDate = getIntent().getStringExtra("personalLastPaymentDate");
         String housingLastPaymentDate = getIntent().getStringExtra("housingLastPaymentDate");
+        ArrayList<AmortizationSchedule> personalLoanSchedule = getIntent().getParcelableArrayListExtra("personalLoanSchedule");
+        ArrayList<AmortizationSchedule> housingLoanSchedule = getIntent().getParcelableArrayListExtra("housingLoanSchedule");
 
         ViewPager viewPager = findViewById(R.id.view_pager);
         TabLayout tabLayout = findViewById(R.id.tab_layout);
@@ -58,6 +66,7 @@ public class ResultActivity extends AppCompatActivity {
                     bundle.putDouble("personalMonthlyInstalment", personalMonthlyInstalment);
                     bundle.putDouble("personalTotalAmount", personalTotalAmount);
                     bundle.putString("personalLastPaymentDate", personalLastPaymentDate);
+                    bundle.putParcelableArrayList("personalLoanSchedule", personalLoanSchedule);
                     fragment.setArguments(bundle);
                 } else if (position == 1) {
                     fragment = new HousingLoanFragment();
@@ -65,6 +74,7 @@ public class ResultActivity extends AppCompatActivity {
                     bundle.putDouble("housingMonthlyInstalment", housingMonthlyInstalment);
                     bundle.putDouble("housingTotalAmount", housingTotalAmount);
                     bundle.putString("housingLastPaymentDate", housingLastPaymentDate);
+                    bundle.putParcelableArrayList("housingLoanSchedule", housingLoanSchedule);
                     fragment.setArguments(bundle);
                 }
                 return fragment;

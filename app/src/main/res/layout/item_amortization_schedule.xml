@@ -1,0 +1,42 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <TextView
+        android:id="@+id/tv_payment_number"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Payment Number"
+        android:textAppearance="?attr/textAppearanceListItem" />
+
+    <TextView
+        android:id="@+id/tv_beginning_balance"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Beginning Balance"
+        android:textAppearance="?attr/textAppearanceListItem" />
+
+    <TextView
+        android:id="@+id/tv_monthly_repayment"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Monthly Repayment"
+        android:textAppearance="?attr/textAppearanceListItem" />
+
+    <TextView
+        android:id="@+id/tv_interest_paid"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Interest Paid"
+        android:textAppearance="?attr/textAppearanceListItem" />
+
+    <TextView
+        android:id="@+id/tv_principal_paid"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Principal Paid"
+        android:textAppearance="?attr/textAppearanceListItem" />
+
+</LinearLayout>
