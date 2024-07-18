@@ -7,13 +7,16 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
+import com.example.financecalculator.model.AmortizationSchedule;
 import com.example.financecalculator.model.Loan;
 import com.example.financecalculator.model.UserDto;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 import java.util.Locale;
 
 public class LoanViewModel extends AndroidViewModel {
@@ -29,6 +32,8 @@ public class LoanViewModel extends AndroidViewModel {
     private MutableLiveData<Integer> personalTenure = new MutableLiveData<>();
     private MutableLiveData<Integer> housingTenure = new MutableLiveData<>();
     private MutableLiveData<Calendar> startLoanPaymentDate = new MutableLiveData<>(Calendar.getInstance());
+    private MutableLiveData<List<AmortizationSchedule>> personalLoanSchedule = new MutableLiveData<>();
+    private MutableLiveData<List<AmortizationSchedule>> housingLoanSchedule = new MutableLiveData<>();
 
     public LoanViewModel(@NonNull Application application) {
         super(application);
@@ -66,6 +71,9 @@ public class LoanViewModel extends AndroidViewModel {
             // Calculate last payment dates
             personalLastPaymentDate.setValue(calculateLastPaymentDate(startDate, pTenure));
             housingLastPaymentDate.setValue(calculateLastPaymentDate(startDate, hTenure));
+
+            // Generate Amortization Schedule
+            generateAmortizationSchedule();
         }
     }
 
@@ -88,6 +96,35 @@ public class LoanViewModel extends AndroidViewModel {
         SimpleDateFormat dateFormat = new SimpleDateFormat("MMMM yyyy", Locale.getDefault());
         return dateFormat.format(calendar.getTime());
     }
+
+
+    public void generateAmortizationSchedule() {
+        Loan loanData = loan.getValue();
+        List<AmortizationSchedule> pSchedule = new ArrayList<>();
+        List<AmortizationSchedule> hSchedule = new ArrayList<>();
+        double hPrincipal = loanData.getPrin();
+        double pMonthlyRepayment = personalMonthlyInstalment.getValue();
+        double hMonthlyRepayment = housingMonthlyInstalment.getValue();
+        double interestRate = loanData.getIntrstRate() / 100 / 12; // Monthly interest rate
+
+        double pInterestPaid = loanData.getPrin() * interestRate;
+
+        for (int i = 1; i <= loanData.getTenure(); i++) {
+            double hInterestPaid = hPrincipal * interestRate;
+            double pPrincipalPaid = pMonthlyRepayment - pInterestPaid;
+            double hPrincipalPaid = hMonthlyRepayment - hInterestPaid;
+            double beginningBalance = hPrincipal;
+
+            pSchedule.add(new AmortizationSchedule(i, beginningBalance, pMonthlyRepayment, pInterestPaid, pPrincipalPaid));
+            hSchedule.add(new AmortizationSchedule(i, beginningBalance, hMonthlyRepayment, hInterestPaid, hPrincipalPaid));
+
+            hPrincipal -= hInterestPaid;
+        }
+
+        personalLoanSchedule.setValue(pSchedule);
+        housingLoanSchedule.setValue(hSchedule);
+    }
+
 
     public LiveData<Double> getHousingMonthlyInstalment() {
         return housingMonthlyInstalment;
@@ -131,6 +168,14 @@ public class LoanViewModel extends AndroidViewModel {
 
     public LiveData<Calendar> getStartLoanPaymentDate() {
         return startLoanPaymentDate;
+    }
+
+    public LiveData<List<AmortizationSchedule>> getPersonalLoanSchedule() {
+        return personalLoanSchedule;
+    }
+
+    public LiveData<List<AmortizationSchedule>> getHousingLoanSchedule() {
+        return housingLoanSchedule;
     }
 
     public LiveData<String> getFormattedStartLoanPaymentDate() {
