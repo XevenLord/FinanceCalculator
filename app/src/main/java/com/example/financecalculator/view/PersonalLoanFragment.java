@@ -31,7 +31,7 @@ public class PersonalLoanFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_personal_loan, container, false);
 
-        tvPersonalMonthlyInstalment = view.findViewById(R.id.tv_personal_monthly_installment);
+        tvPersonalMonthlyInstalment = view.findViewById(R.id.tv_personal_monthly_instalment);
         tvPersonalTotalAmount = view.findViewById(R.id.tv_personal_total_amount);
         tvPersonalLastPaymentDate = view.findViewById(R.id.tv_personal_last_payment_date);
         recyclerView = view.findViewById(R.id.recycler_view);
@@ -42,14 +42,14 @@ public class PersonalLoanFragment extends Fragment {
             String personalLastPaymentDate = getArguments().getString("personalLastPaymentDate");
             personalLoanSchedule = getArguments().getParcelableArrayList("personalLoanSchedule");
 
-            tvPersonalMonthlyInstalment.setText(String.valueOf(personalMonthlyInstalment));
-            tvPersonalTotalAmount.setText(String.valueOf(personalTotalAmount));
+            tvPersonalMonthlyInstalment.setText(String.format("%.2f", personalMonthlyInstalment));
+            tvPersonalTotalAmount.setText(String.format("%.2f", personalTotalAmount));
             tvPersonalLastPaymentDate.setText(personalLastPaymentDate);
-
-            recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-            adapter = new AmortizationScheduleAdapter(personalLoanSchedule);
-            recyclerView.setAdapter(adapter);
         }
+
+        adapter = new AmortizationScheduleAdapter(personalLoanSchedule);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        recyclerView.setAdapter(adapter);
 
         return view;
     }

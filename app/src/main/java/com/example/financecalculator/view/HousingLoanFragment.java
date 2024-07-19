@@ -31,7 +31,7 @@ public class HousingLoanFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_housing_loan, container, false);
 
-        tvHousingMonthlyInstalment = view.findViewById(R.id.tv_housing_monthly_installment);
+        tvHousingMonthlyInstalment = view.findViewById(R.id.tv_housing_monthly_instalment);
         tvHousingTotalAmount = view.findViewById(R.id.tv_housing_total_amount);
         tvHousingLastPaymentDate = view.findViewById(R.id.tv_housing_last_payment_date);
         recyclerView = view.findViewById(R.id.recycler_view);
@@ -42,14 +42,14 @@ public class HousingLoanFragment extends Fragment {
             String housingLastPaymentDate = getArguments().getString("housingLastPaymentDate");
             housingLoanSchedule = getArguments().getParcelableArrayList("housingLoanSchedule");
 
-            tvHousingMonthlyInstalment.setText(String.valueOf(housingMonthlyInstalment));
-            tvHousingTotalAmount.setText(String.valueOf(housingTotalAmount));
+            tvHousingMonthlyInstalment.setText(String.format("%.2f", housingMonthlyInstalment));
+            tvHousingTotalAmount.setText(String.format("%.2f", housingTotalAmount));
             tvHousingLastPaymentDate.setText(housingLastPaymentDate);
-
-            recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-            adapter = new AmortizationScheduleAdapter(housingLoanSchedule);
-            recyclerView.setAdapter(adapter);
         }
+
+        adapter = new AmortizationScheduleAdapter(housingLoanSchedule);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        recyclerView.setAdapter(adapter);
 
         return view;
     }
