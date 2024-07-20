@@ -2,10 +2,15 @@ package com.example.financecalculator.view;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.EditText;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -14,6 +19,7 @@ import com.example.financecalculator.model.Loan;
 import com.example.financecalculator.viewmodel.LoanViewModel;
 import com.example.financecalculator.store.ViewModelStoreHolder;
 import com.example.financecalculator.viewmodel.UserViewModel;
+import com.google.firebase.auth.FirebaseAuth;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -22,11 +28,17 @@ import java.util.ArrayList;
 public class InputActivity extends AppCompatActivity {
     private LoanViewModel loanViewModel;
     private UserViewModel userViewModel;
+    private FirebaseAuth mAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_input);
+
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        mAuth = FirebaseAuth.getInstance();
 
         loanViewModel = new ViewModelProvider(
                 ViewModelStoreHolder.getInstance(),
@@ -105,5 +117,24 @@ public class InputActivity extends AppCompatActivity {
             etInterestRate.setText("");
             etTenure.setText("");
         });
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if (item.getItemId() == R.id.action_logout) {
+            mAuth.signOut();
+            Intent intent = new Intent(InputActivity.this, LoginActivity.class);
+            startActivity(intent);
+            finish();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

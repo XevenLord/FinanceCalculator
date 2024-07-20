@@ -102,6 +102,7 @@ public class LoanViewModel extends AndroidViewModel {
         Loan loanData = loan.getValue();
         List<AmortizationSchedule> pSchedule = new ArrayList<>();
         List<AmortizationSchedule> hSchedule = new ArrayList<>();
+        double pPrincipal = loanData.getPrin();
         double hPrincipal = loanData.getPrin();
         double pMonthlyRepayment = personalMonthlyInstalment.getValue();
         double hMonthlyRepayment = housingMonthlyInstalment.getValue();
@@ -110,15 +111,17 @@ public class LoanViewModel extends AndroidViewModel {
         double pInterestPaid = loanData.getPrin() * interestRate;
 
         for (int i = 1; i <= loanData.getTenure(); i++) {
-            double hInterestPaid = hPrincipal * interestRate;
-            double pPrincipalPaid = pMonthlyRepayment - pInterestPaid;
-            double hPrincipalPaid = hMonthlyRepayment - hInterestPaid;
-            double beginningBalance = hPrincipal;
+            double hInterestPaid = roundToTwoDecimalPlaces((hPrincipal * interestRate));
+            double hPrincipalPaid = roundToTwoDecimalPlaces((hMonthlyRepayment - hInterestPaid));
+            double pPrincipalPaid = roundToTwoDecimalPlaces((pMonthlyRepayment - pInterestPaid));
+            double pBeginningBalance = roundToTwoDecimalPlaces(pPrincipal);
+            double hBeginningBalance = roundToTwoDecimalPlaces(hPrincipal);
 
-            pSchedule.add(new AmortizationSchedule(i, beginningBalance, pMonthlyRepayment, pInterestPaid, pPrincipalPaid));
-            hSchedule.add(new AmortizationSchedule(i, beginningBalance, hMonthlyRepayment, hInterestPaid, hPrincipalPaid));
+            pSchedule.add(new AmortizationSchedule(i, pBeginningBalance, pMonthlyRepayment, pInterestPaid, pPrincipalPaid));
+            hSchedule.add(new AmortizationSchedule(i, hBeginningBalance, hMonthlyRepayment, hInterestPaid, hPrincipalPaid));
 
-            hPrincipal -= hInterestPaid;
+            pPrincipal -= roundToTwoDecimalPlaces(pPrincipalPaid);
+            hPrincipal -= roundToTwoDecimalPlaces(hPrincipalPaid);
         }
 
         personalLoanSchedule.setValue(pSchedule);

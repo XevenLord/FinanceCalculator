@@ -3,6 +3,9 @@ package com.example.financecalculator.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+
 public class AmortizationSchedule implements Parcelable {
     private int paymentNumber;
     private double beginningBalance;
@@ -12,18 +15,18 @@ public class AmortizationSchedule implements Parcelable {
 
     public AmortizationSchedule(int paymentNumber, double beginningBalance, double monthlyRepayment, double interestPaid, double principalPaid) {
         this.paymentNumber = paymentNumber;
-        this.beginningBalance = beginningBalance;
-        this.monthlyRepayment = monthlyRepayment;
-        this.interestPaid = interestPaid;
-        this.principalPaid = principalPaid;
+        this.beginningBalance = roundToTwoDecimals(beginningBalance);
+        this.monthlyRepayment = roundToTwoDecimals(monthlyRepayment);
+        this.interestPaid = roundToTwoDecimals(interestPaid);
+        this.principalPaid = roundToTwoDecimals(principalPaid);
     }
 
     protected AmortizationSchedule(Parcel in) {
         paymentNumber = in.readInt();
-        beginningBalance = in.readDouble();
-        monthlyRepayment = in.readDouble();
-        interestPaid = in.readDouble();
-        principalPaid = in.readDouble();
+        beginningBalance = roundToTwoDecimals(in.readDouble());
+        monthlyRepayment = roundToTwoDecimals(in.readDouble());
+        interestPaid = roundToTwoDecimals(in.readDouble());
+        principalPaid = roundToTwoDecimals(in.readDouble());
     }
 
     public static final Creator<AmortizationSchedule> CREATOR = new Creator<AmortizationSchedule>() {
@@ -70,5 +73,11 @@ public class AmortizationSchedule implements Parcelable {
 
     public double getPrincipalPaid() {
         return principalPaid;
+    }
+
+    private double roundToTwoDecimals(double value) {
+        BigDecimal bd = new BigDecimal(value);
+        bd = bd.setScale(2, RoundingMode.HALF_UP);
+        return bd.doubleValue();
     }
 }
