@@ -1,42 +1,46 @@
-<?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
     android:padding="8dp">
 
     <TextView
         android:id="@+id/tv_payment_number"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="Payment Number"
-        android:padding="4dp"/>
+        android:layout_weight="1"
+        android:padding="4dp"
+        android:text="Payment Number"/>
 
     <TextView
         android:id="@+id/tv_beginning_balance"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="Beginning Balance"
-        android:padding="4dp"/>
+        android:layout_weight="1"
+        android:padding="4dp"
+        android:text="Beginning Balance"/>
 
     <TextView
         android:id="@+id/tv_monthly_repayment"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="Monthly Repayment"
-        android:padding="4dp"/>
+        android:layout_weight="1"
+        android:padding="4dp"
+        android:text="Monthly Repayment"/>
 
     <TextView
         android:id="@+id/tv_interest_paid"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="Interest Paid"
-        android:padding="4dp"/>
+        android:layout_weight="1"
+        android:padding="4dp"
+        android:text="Interest Paid"/>
 
     <TextView
         android:id="@+id/tv_principal_paid"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="Principal Paid"
-        android:padding="4dp"/>
+        android:layout_weight="1"
+        android:padding="4dp"
+        android:text="Principal Paid"/>
 </LinearLayout>
