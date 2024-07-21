@@ -60,6 +60,7 @@ public class InputActivity extends AppCompatActivity {
         Button btnCalculate = findViewById(R.id.btn_calculate);
         Button btnClear = findViewById(R.id.btn_clear);
         Button btnSelectDate = findViewById(R.id.btn_select_date);
+        Button btnFeedback = findViewById(R.id.btn_feedback);
         tvSelectedDate = findViewById(R.id.tv_selected_date);
 
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
@@ -125,7 +126,6 @@ public class InputActivity extends AppCompatActivity {
             }
         });
 
-
         btnClear.setOnClickListener(v -> {
             etPrincipal.setText("");
             etInterestRate.setText("");
@@ -133,6 +133,11 @@ public class InputActivity extends AppCompatActivity {
             spinnerLoanType.setSelection(0);
             tvSelectedDate.setText("");
             selectedDate = null;
+        });
+
+        btnFeedback.setOnClickListener(v -> {
+            Intent intent = new Intent(InputActivity.this, FeedbackActivity.class);
+            startActivity(intent);
         });
     }
 
@@ -192,20 +197,6 @@ public class InputActivity extends AppCompatActivity {
         });
     }
 
-    private void showDatePickerDialog() {
-        final Calendar calendar = Calendar.getInstance();
-        int year = calendar.get(Calendar.YEAR);
-        int month = calendar.get(Calendar.MONTH);
-        int day = calendar.get(Calendar.DAY_OF_MONTH);
-
-        DatePickerDialog datePickerDialog = new DatePickerDialog(this,
-                (view, year1, month1, dayOfMonth) -> {
-                    selectedDate = LocalDate.of(year1, month1 + 1, dayOfMonth);
-                    tvSelectedDate.setText(selectedDate.toString());
-                }, year, month, day);
-        datePickerDialog.show();
-    }
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
@@ -223,5 +214,22 @@ public class InputActivity extends AppCompatActivity {
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void showDatePickerDialog() {
+        Calendar calendar = Calendar.getInstance();
+        int year = calendar.get(Calendar.YEAR);
+        int month = calendar.get(Calendar.MONTH);
+        int day = calendar.get(Calendar.DAY_OF_MONTH);
+
+        DatePickerDialog datePickerDialog = new DatePickerDialog(
+                InputActivity.this,
+                (view, year1, month1, dayOfMonth) -> {
+                    selectedDate = LocalDate.of(year1, month1 + 1, dayOfMonth);
+                    tvSelectedDate.setText(selectedDate.toString());
+                },
+                year, month, day
+        );
+        datePickerDialog.show();
     }
 }

@@ -38,6 +38,10 @@
             android:name=".view.ResultActivity"
             android:exported="true"
             android:theme="@style/Theme.FinanceCalculator" />
+        <activity
+            android:name=".view.FeedbackActivity"
+            android:exported="true"
+            android:theme="@style/Theme.FinanceCalculator" />
     </application>
 
 </manifest>
