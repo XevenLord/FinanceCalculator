@@ -6,7 +6,10 @@
     <string name="second_fragment_label">Housing Loan</string>
     <string name="next">Next</string>
     <string name="previous">Previous</string>
-
+    <string-array name="loan_types">
+        <item>Personal</item>
+        <item>Housing</item>
+    </string-array>
     <string name="lorem_ipsum">
         Tell us about your birth year
     </string>

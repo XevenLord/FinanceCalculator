@@ -33,6 +33,7 @@ public class ResultActivity extends AppCompatActivity {
                 ViewModelProvider.AndroidViewModelFactory.getInstance(getApplication())
         ).get(LoanViewModel.class);
 
+        String loanType = getIntent().getStringExtra("loanType");
         double personalMonthlyInstalment = getIntent().getDoubleExtra("personalMonthlyInstalment", 0);
         double housingMonthlyInstalment = getIntent().getDoubleExtra("housingMonthlyInstalment", 0);
         double personalTotalAmount = getIntent().getDoubleExtra("personalTotalAmount", 0);
@@ -57,37 +58,40 @@ public class ResultActivity extends AppCompatActivity {
             @Override
             public Fragment getItem(int position) {
                 Fragment fragment = null;
-                if (position == 0) {
+                Bundle bundle = new Bundle();
+
+                if ("Personal".equals(loanType)) {
                     fragment = new PersonalLoanFragment();
-                    Bundle bundle = new Bundle();
                     bundle.putDouble("personalMonthlyInstalment", personalMonthlyInstalment);
                     bundle.putDouble("personalTotalAmount", personalTotalAmount);
                     bundle.putString("personalLastPaymentDate", personalLastPaymentDate);
                     bundle.putParcelableArrayList("personalLoanSchedule", personalLoanSchedule);
-                    fragment.setArguments(bundle);
-                } else if (position == 1) {
+                } else if ("Housing".equals(loanType)) {
                     fragment = new HousingLoanFragment();
-                    Bundle bundle = new Bundle();
                     bundle.putDouble("housingMonthlyInstalment", housingMonthlyInstalment);
                     bundle.putDouble("housingTotalAmount", housingTotalAmount);
                     bundle.putString("housingLastPaymentDate", housingLastPaymentDate);
                     bundle.putParcelableArrayList("housingLoanSchedule", housingLoanSchedule);
+                }
+
+                if (fragment != null) {
                     fragment.setArguments(bundle);
                 }
+
                 return fragment;
             }
 
             @Override
             public int getCount() {
-                return 2;
+                return "Personal".equals(loanType) ? 1 : 1;
             }
 
             @Nullable
             @Override
             public CharSequence getPageTitle(int position) {
-                if (position == 0) {
+                if ("Personal".equals(loanType)) {
                     return "Personal Loan";
-                } else if (position == 1) {
+                } else if ("Housing".equals(loanType)) {
                     return "Housing Loan";
                 }
                 return null;
