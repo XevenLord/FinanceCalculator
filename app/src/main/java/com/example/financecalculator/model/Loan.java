@@ -1,12 +1,15 @@
 package com.example.financecalculator.model;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.Date;
 
 public class Loan {
     private double prin;    // principal
     private double intrstRate;  // interestRate
     private int tenure;
-    private LocalDateTime stTm; // startTime
+    private LocalDateTime stTm; // start time
 
     public Loan(double prin, double intrstRate, int tenure, LocalDateTime stTm) {
         this.prin = prin;
@@ -62,4 +65,7 @@ public class Loan {
         this.stTm = stTm;
     }
 
+    public Date getStartDateAsDate() {
+        return Date.from(stTm.atZone(ZoneId.systemDefault()).toInstant());
+    }
 }

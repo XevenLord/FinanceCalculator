@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -25,6 +26,7 @@ public class HousingLoanFragment extends Fragment {
     private RecyclerView recyclerView;
     private AmortizationScheduleAdapter adapter;
     private ArrayList<AmortizationSchedule> housingLoanSchedule;
+    private Button btnToggleSchedule;
 
     @Nullable
     @Override
@@ -35,6 +37,7 @@ public class HousingLoanFragment extends Fragment {
         tvHousingTotalAmount = view.findViewById(R.id.tv_housing_total_amount);
         tvHousingLastPaymentDate = view.findViewById(R.id.tv_housing_last_payment_date);
         recyclerView = view.findViewById(R.id.recycler_view);
+        btnToggleSchedule = view.findViewById(R.id.btn_toggle_schedule);
 
         if (getArguments() != null) {
             double housingMonthlyInstalment = getArguments().getDouble("housingMonthlyInstalment");
@@ -50,6 +53,20 @@ public class HousingLoanFragment extends Fragment {
         adapter = new AmortizationScheduleAdapter(housingLoanSchedule);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setAdapter(adapter);
+
+        // Set the button click listener
+        btnToggleSchedule.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (recyclerView.getVisibility() == View.GONE) {
+                    recyclerView.setVisibility(View.VISIBLE);
+                    btnToggleSchedule.setText("Hide Schedule");
+                } else {
+                    recyclerView.setVisibility(View.GONE);
+                    btnToggleSchedule.setText("Show Schedule");
+                }
+            }
+        });
 
         return view;
     }

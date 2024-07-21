@@ -16,6 +16,7 @@ import java.math.RoundingMode;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -77,6 +78,72 @@ public class LoanViewModel extends AndroidViewModel {
         }
     }
 
+    public void calcPersonalMthlyInstalment() {
+        Loan loanData = loan.getValue();
+        UserDto userData = user.getValue();
+        getStartDateAsCalendar();
+        Calendar startDate = startLoanPaymentDate.getValue();
+        if (loanData != null && userData != null && startDate != null) {
+            double principal = loanData.getPrin();
+            double rate = loanData.getIntrstRate() / 12 / 100;
+            int tenure = loanData.getTenure();
+
+            int currentYear = Calendar.getInstance().get(Calendar.YEAR);
+            int age = currentYear - userData.getBirthYear();
+
+            tenure = Math.min(tenure, Math.min(10 * 12, (60 - age) * 12));
+
+            // Store the number of repayment
+            personalTenure.setValue(tenure);
+
+            // Calculate personal loan monthly installment
+            personalMonthlyInstalment.setValue(personalLoanInstalment(principal, rate, tenure));
+
+            // Calculate total amount
+            personalTotalAmt.setValue(roundToTwoDecimalPlaces(personalMonthlyInstalment.getValue() * tenure));
+
+            // Calculate last payment date
+            personalLastPaymentDate.setValue(calculateLastPaymentDate(startDate, tenure));
+
+            // Generate Amortization Schedule
+            generatePersonalLoanAmortizationSchedule();
+        }
+    }
+
+    public void calcHousingMthlyInstalment() {
+        Loan loanData = loan.getValue();
+        UserDto userData = user.getValue();
+        getStartDateAsCalendar();
+        Calendar startDate = startLoanPaymentDate.getValue();
+        if (loanData != null && userData != null && startDate != null) {
+            double principal = loanData.getPrin();
+            double rate = loanData.getIntrstRate() / 12 / 100;
+            int tenure = loanData.getTenure();
+
+            int currentYear = Calendar.getInstance().get(Calendar.YEAR);
+            int age = currentYear - userData.getBirthYear();
+
+            tenure = Math.min(tenure, Math.min(35 * 12, (70 - age) * 12));
+
+            // Store the number of repayment
+            housingTenure.setValue(tenure);
+
+            // Calculate housing loan monthly installment
+            housingMonthlyInstalment.setValue(housingLoanInstalment(principal, rate, tenure));
+
+            // Calculate total amount
+            housingTotalAmt.setValue(roundToTwoDecimalPlaces(housingMonthlyInstalment.getValue() * tenure));
+
+            // Calculate last payment date
+            housingLastPaymentDate.setValue(calculateLastPaymentDate(startDate, tenure));
+
+            // Generate Amortization Schedule
+            generateHousingLoanAmortizationSchedule();
+        }
+    }
+
+
+
     private double personalLoanInstalment(double p, double r, int n) {
         return roundToTwoDecimalPlaces((p * (1 + r * n)) / n);
     }
@@ -93,7 +160,7 @@ public class LoanViewModel extends AndroidViewModel {
     private String calculateLastPaymentDate(Calendar startDate, int tenure) {
         Calendar calendar = (Calendar) startDate.clone();
         calendar.add(Calendar.MONTH, tenure);
-        SimpleDateFormat dateFormat = new SimpleDateFormat("MMMM yyyy", Locale.getDefault());
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMMM yyyy", Locale.getDefault());
         return dateFormat.format(calendar.getTime());
     }
 
@@ -127,6 +194,49 @@ public class LoanViewModel extends AndroidViewModel {
         personalLoanSchedule.setValue(pSchedule);
         housingLoanSchedule.setValue(hSchedule);
     }
+
+    public void generatePersonalLoanAmortizationSchedule() {
+        Loan loanData = loan.getValue();
+        List<AmortizationSchedule> pSchedule = new ArrayList<>();
+        double pPrincipal = loanData.getPrin();
+        double pMonthlyRepayment = personalMonthlyInstalment.getValue();
+        double interestRate = loanData.getIntrstRate() / 100 / 12; // Monthly interest rate
+
+        double pInterestPaid = loanData.getPrin() * interestRate;
+
+        for (int i = 1; i <= loanData.getTenure(); i++) {
+            double pPrincipalPaid = roundToTwoDecimalPlaces((pMonthlyRepayment - pInterestPaid));
+            double pBeginningBalance = roundToTwoDecimalPlaces(pPrincipal);
+
+            pSchedule.add(new AmortizationSchedule(i, pBeginningBalance, pMonthlyRepayment, pInterestPaid, pPrincipalPaid));
+
+            pPrincipal -= roundToTwoDecimalPlaces(pPrincipalPaid);
+        }
+
+        personalLoanSchedule.setValue(pSchedule);
+    }
+
+    public void generateHousingLoanAmortizationSchedule() {
+        Loan loanData = loan.getValue();
+        List<AmortizationSchedule> hSchedule = new ArrayList<>();
+        double hPrincipal = loanData.getPrin();
+        double hMonthlyRepayment = housingMonthlyInstalment.getValue();
+        double interestRate = loanData.getIntrstRate() / 100 / 12; // Monthly interest rate
+
+        for (int i = 1; i <= loanData.getTenure(); i++) {
+            double hInterestPaid = roundToTwoDecimalPlaces((hPrincipal * interestRate));
+            double hPrincipalPaid = roundToTwoDecimalPlaces((hMonthlyRepayment - hInterestPaid));
+            double hBeginningBalance = roundToTwoDecimalPlaces(hPrincipal);
+
+            hSchedule.add(new AmortizationSchedule(i, hBeginningBalance, hMonthlyRepayment, hInterestPaid, hPrincipalPaid));
+
+            hPrincipal -= roundToTwoDecimalPlaces(hPrincipalPaid);
+        }
+
+        housingLoanSchedule.setValue(hSchedule);
+    }
+
+
 
 
     public LiveData<Double> getHousingMonthlyInstalment() {
@@ -192,7 +302,13 @@ public class LoanViewModel extends AndroidViewModel {
 
     public void setStartLoanPaymentDate(Calendar startLoanPaymentDate) {
         this.startLoanPaymentDate.setValue(startLoanPaymentDate);
-        // Recalculate installments and last payment dates when start date changes
-        calcMthlyInstalment();
+    }
+
+    public void getStartDateAsCalendar() {
+        Loan loanData = loan.getValue();
+        Date startDate = loanData.getStartDateAsDate();
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(startDate);
+        startLoanPaymentDate.setValue(calendar);
     }
 }
