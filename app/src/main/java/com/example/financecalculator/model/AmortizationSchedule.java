@@ -12,6 +12,16 @@ public class AmortizationSchedule implements Parcelable {
     private double monthlyRepayment;
     private double interestPaid;
     private double principalPaid;
+    private String paymentDate;
+
+    public AmortizationSchedule(int paymentNumber, double beginningBalance, double monthlyRepayment, double interestPaid, double principalPaid, String paymentDate) {
+        this.paymentNumber = paymentNumber;
+        this.beginningBalance = beginningBalance;
+        this.monthlyRepayment = monthlyRepayment;
+        this.interestPaid = interestPaid;
+        this.principalPaid = principalPaid;
+        this.paymentDate = paymentDate;
+    }
 
     public AmortizationSchedule(int paymentNumber, double beginningBalance, double monthlyRepayment, double interestPaid, double principalPaid) {
         this.paymentNumber = paymentNumber;
@@ -27,6 +37,7 @@ public class AmortizationSchedule implements Parcelable {
         monthlyRepayment = roundToTwoDecimals(in.readDouble());
         interestPaid = roundToTwoDecimals(in.readDouble());
         principalPaid = roundToTwoDecimals(in.readDouble());
+        paymentDate = in.readString();
     }
 
     public static final Creator<AmortizationSchedule> CREATOR = new Creator<AmortizationSchedule>() {
@@ -53,6 +64,7 @@ public class AmortizationSchedule implements Parcelable {
         dest.writeDouble(monthlyRepayment);
         dest.writeDouble(interestPaid);
         dest.writeDouble(principalPaid);
+        dest.writeString(paymentDate);
     }
 
     public int getPaymentNumber() {
@@ -73,6 +85,34 @@ public class AmortizationSchedule implements Parcelable {
 
     public double getPrincipalPaid() {
         return principalPaid;
+    }
+
+    public String getPaymentDate() {
+        return paymentDate;
+    }
+
+    public void setPaymentNumber(int paymentNumber) {
+        this.paymentNumber = paymentNumber;
+    }
+
+    public void setBeginningBalance(double beginningBalance) {
+        this.beginningBalance = beginningBalance;
+    }
+
+    public void setMonthlyRepayment(double monthlyRepayment) {
+        this.monthlyRepayment = monthlyRepayment;
+    }
+
+    public void setInterestPaid(double interestPaid) {
+        this.interestPaid = interestPaid;
+    }
+
+    public void setPrincipalPaid(double principalPaid) {
+        this.principalPaid = principalPaid;
+    }
+
+    public void setPaymentDate(String paymentDate) {
+        this.paymentDate = paymentDate;
     }
 
     private double roundToTwoDecimals(double value) {

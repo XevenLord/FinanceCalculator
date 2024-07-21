@@ -79,4 +79,26 @@
             android:visibility="gone"/>
 
     </HorizontalScrollView>
+
+    <EditText
+        android:id="@+id/et_month_year"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Enter Month and Year (e.g., January 2024)" />
+
+    <Button
+        android:id="@+id/btn_lookup_interest"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Lookup Interest" />
+
+    <TextView
+        android:id="@+id/tv_interest_paid"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="8dp"
+        android:text=""
+        android:textColor="@android:color/black"
+        android:textSize="16sp" />
+
 </LinearLayout>

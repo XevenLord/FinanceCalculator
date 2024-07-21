@@ -1,6 +1,7 @@
 package com.example.financecalculator.viewmodel;
 
 import android.app.Application;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
@@ -204,13 +205,20 @@ public class LoanViewModel extends AndroidViewModel {
 
         double pInterestPaid = loanData.getPrin() * interestRate;
 
+        Calendar paymentDate = (Calendar) startLoanPaymentDate.getValue().clone();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("MMMM yyyy", Locale.getDefault());
+
         for (int i = 1; i <= loanData.getTenure(); i++) {
             double pPrincipalPaid = roundToTwoDecimalPlaces((pMonthlyRepayment - pInterestPaid));
             double pBeginningBalance = roundToTwoDecimalPlaces(pPrincipal);
 
-            pSchedule.add(new AmortizationSchedule(i, pBeginningBalance, pMonthlyRepayment, pInterestPaid, pPrincipalPaid));
+            String paymentDateString = dateFormat.format(paymentDate.getTime());
+
+            pSchedule.add(new AmortizationSchedule(i, pBeginningBalance, pMonthlyRepayment, pInterestPaid, pPrincipalPaid, paymentDateString));
 
             pPrincipal -= roundToTwoDecimalPlaces(pPrincipalPaid);
+
+            paymentDate.add(Calendar.MONTH, 1);
         }
 
         personalLoanSchedule.setValue(pSchedule);
@@ -223,21 +231,25 @@ public class LoanViewModel extends AndroidViewModel {
         double hMonthlyRepayment = housingMonthlyInstalment.getValue();
         double interestRate = loanData.getIntrstRate() / 100 / 12; // Monthly interest rate
 
+        Calendar paymentDate = (Calendar) startLoanPaymentDate.getValue().clone();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("MMMM yyyy", Locale.getDefault());
+
         for (int i = 1; i <= loanData.getTenure(); i++) {
             double hInterestPaid = roundToTwoDecimalPlaces((hPrincipal * interestRate));
             double hPrincipalPaid = roundToTwoDecimalPlaces((hMonthlyRepayment - hInterestPaid));
             double hBeginningBalance = roundToTwoDecimalPlaces(hPrincipal);
 
-            hSchedule.add(new AmortizationSchedule(i, hBeginningBalance, hMonthlyRepayment, hInterestPaid, hPrincipalPaid));
+            String paymentDateString = dateFormat.format(paymentDate.getTime());
+
+            hSchedule.add(new AmortizationSchedule(i, hBeginningBalance, hMonthlyRepayment, hInterestPaid, hPrincipalPaid, paymentDateString));
 
             hPrincipal -= roundToTwoDecimalPlaces(hPrincipalPaid);
+
+            paymentDate.add(Calendar.MONTH, 1);
         }
 
         housingLoanSchedule.setValue(hSchedule);
     }
-
-
-
 
     public LiveData<Double> getHousingMonthlyInstalment() {
         return housingMonthlyInstalment;
@@ -311,4 +323,17 @@ public class LoanViewModel extends AndroidViewModel {
         calendar.setTime(startDate);
         startLoanPaymentDate.setValue(calendar);
     }
+
+    public Double getInterestPaidForMonthYear(String monthYear, List<AmortizationSchedule> schedule) {
+        if (schedule != null) {
+            for (AmortizationSchedule entry : schedule) {
+                System.out.println("paymentString Date : "+ entry.getPaymentDate());
+                if (entry.getPaymentDate().equalsIgnoreCase(monthYear)) {
+                    return entry.getInterestPaid();
+                }
+            }
+        }
+        return null; // Return null if no entry is found for the specified month and year
+    }
+
 }
